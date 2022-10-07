@@ -116,11 +116,8 @@ export default function Register() {
       userData
     );
     if (data.isAvailable) {
-      const response = await axios.post(
-        "https://api.escuelajs.co/api/v1/users/",
-        userData
-      );
-      console.log(response);
+      await axios.post("https://api.escuelajs.co/api/v1/users/", userData);
+      // console.log(response);
       navigate("/login");
     } else {
       Swal.fire({

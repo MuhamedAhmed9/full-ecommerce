@@ -1,15 +1,24 @@
 import "./App.css";
-import Navbar from "./Components/Navbar/Navbar";
-import Home from "./Components/Home/Home";
-import Profile from "./Components/Profile/Profile";
+import { useState, useEffect, createContext, lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import ProductDetails from "./Components/ProductDetails/ProductDetails";
-import Cart from "./Components/Cart/Cart";
-import { useState, useEffect, createContext } from "react";
-import Register from "./Components/Register/Register";
-import Login from "./Components/Login/Login";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import ProtectedLogin from "./Components/ProtectedLogin/ProtectedLogin";
+const Navbar = lazy(() => import("./Components/Navbar/Navbar"));
+// import Navbar from "./Components/Navbar/Navbar";
+const Home = lazy(() => import("./Components/Home/Home"));
+// import Home from "./Components/Home/Home";
+const Profile = lazy(() => import("./Components/Profile/Profile"));
+// import Profile from "./Components/Profile/Profile";
+const ProductDetails = lazy(() =>
+  import("./Components/ProductDetails/ProductDetails")
+);
+// import ProductDetails from "./Components/ProductDetails/ProductDetails";
+const Cart = lazy(() => import("./Components/Cart/Cart"));
+// import Cart from "./Components/Cart/Cart";
+const Register = lazy(() => import("./Components/Register/Register"));
+// import Register from "./Components/Register/Register";
+const Login = lazy(() => import("./Components/Login/Login"));
+// import Login from "./Components/Login/Login";
 
 export let StoreContext = createContext(0);
 
@@ -72,82 +81,100 @@ function App() {
   }, []);
 
   return (
-    <div className="main">
-      <StoreContext.Provider value={{ user, setUser }}>
-        <Navbar
-          loggedIn={loggedIn}
-          setLoggedIn={setLoggedIn}
-          cartProductsNum={cartProductsNum}
-          changeStatus={changeStatus}
-        />
-      </StoreContext.Provider>
-      {cartStatus && (
-        <Cart
-          checkCart={checkCart}
-          filterProducts={filterProducts}
-          products={cartProducts}
-          setCartProductsNum={setCartProductsNum}
-          changeStatus={changeStatus}
-        />
-      )}
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <StoreContext.Provider value={{ user, setUser }}>
-                <Home />
-              </StoreContext.Provider>
-            </ProtectedRoute>
+    <Suspense
+      fallback={
+        <div className="lds-ripple">
+          <div></div>
+          <div></div>
+        </div>
+      }
+    >
+      <div className="main">
+        <StoreContext.Provider value={{ user, setUser }}>
+          <Navbar
+            loggedIn={loggedIn}
+            setLoggedIn={setLoggedIn}
+            cartProductsNum={cartProductsNum}
+            changeStatus={changeStatus}
+          />
+        </StoreContext.Provider>
+        {cartStatus && (
+          <Cart
+            checkCart={checkCart}
+            filterProducts={filterProducts}
+            products={cartProducts}
+            setCartProductsNum={setCartProductsNum}
+            changeStatus={changeStatus}
+          />
+        )}
+        <Suspense
+          fallback={
+            <div className="lds-ripple">
+              <div></div>
+              <div></div>
+            </div>
           }
-        />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <StoreContext.Provider value={{ user, setUser }}>
-                <Home />
-              </StoreContext.Provider>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <ProtectedLogin>
-              <Register />
-            </ProtectedLogin>
-          }
-        />
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <StoreContext.Provider value={{ user, setUser }}>
+                    <Home />
+                  </StoreContext.Provider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <StoreContext.Provider value={{ user, setUser }}>
+                    <Home />
+                  </StoreContext.Provider>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <ProtectedLogin>
+                  <Register />
+                </ProtectedLogin>
+              }
+            />
 
-        <Route
-          path="/login"
-          element={
-            <ProtectedLogin>
-              <Login setLoggedIn={setLoggedIn} />
-            </ProtectedLogin>
-          }
-        />
+            <Route
+              path="/login"
+              element={
+                <ProtectedLogin>
+                  <Login setLoggedIn={setLoggedIn} />
+                </ProtectedLogin>
+              }
+            />
 
-        <Route
-          path="/product/:id"
-          element={
-            <ProtectedRoute>
-              <ProductDetails addProduct={addProduct} />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={"not found 404"} />
-      </Routes>
-    </div>
+            <Route
+              path="/product/:id"
+              element={
+                <ProtectedRoute>
+                  <ProductDetails addProduct={addProduct} />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={"not found 404"} />
+          </Routes>
+        </Suspense>
+      </div>
+    </Suspense>
   );
 }
 

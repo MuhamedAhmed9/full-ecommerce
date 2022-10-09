@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Profile() {
+export default function Profile(props) {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({});
   const getProfile = async () => {
@@ -18,8 +18,7 @@ export default function Profile() {
     );
     const data = await response.json();
     if (data && data.statusCode === 401) {
-      localStorage.removeItem("token");
-      return navigate("/login");
+      return props.logOut();
     } else {
       setUserData(data);
     }

@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState, useEffect, createContext, lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute";
 import ProtectedLogin from "./Components/ProtectedLogin/ProtectedLogin";
 const Navbar = lazy(() => import("./Components/Navbar/Navbar"));
@@ -23,6 +23,7 @@ const Login = lazy(() => import("./Components/Login/Login"));
 export let StoreContext = createContext(0);
 
 function App() {
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState("");
   const [cartProducts, setCartProducts] = useState([]);
@@ -75,6 +76,15 @@ function App() {
     }
   };
 
+  const logOut = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+    return navigate("/login");
+  };
+
   useEffect(() => {
     checkCart();
     checkUser();
@@ -96,6 +106,7 @@ function App() {
             setLoggedIn={setLoggedIn}
             cartProductsNum={cartProductsNum}
             changeStatus={changeStatus}
+            logOut={logOut}
           />
         </StoreContext.Provider>
         {cartStatus && (
@@ -140,7 +151,7 @@ function App() {
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <Profile logOut={logOut} />
                 </ProtectedRoute>
               }
             />

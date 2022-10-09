@@ -4,16 +4,10 @@ import { StoreContext } from "./../../App";
 
 export default function Navbar(props) {
   const { user } = useContext(StoreContext);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dropdownClick = (e) => {
     e.preventDefault();
     document.querySelector(".dropdown").classList.toggle("d-block");
-  };
-  const logOut = (e) => {
-    e.preventDefault();
-    localStorage.removeItem("token");
-    props.setLoggedIn(false);
-    return navigate("/login");
   };
   const closeDropDown = (e) => {
     e.preventDefault();
@@ -62,7 +56,7 @@ export default function Navbar(props) {
                     <Link to="/profile">Profile</Link>
                   </li>
                   <li>
-                    <Link onClick={logOut}>Logout</Link>
+                    <Link onClick={props.logOut}>Logout</Link>
                   </li>
                 </ul>
               </li>

@@ -102,7 +102,7 @@ export default function Home() {
     let token = localStorage.getItem("token");
     if (token) {
       const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
+      // console.log(decodedToken);
       fetchUser(decodedToken.sub);
     }
   };
